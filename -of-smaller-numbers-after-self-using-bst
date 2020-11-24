@@ -1,0 +1,62 @@
+struct node
+{
+    int value;
+    struct node* right;
+    struct node* left;
+    int leftsidesize;
+    int repeat;
+};
+
+struct node* create(int val)
+{
+    struct node* node= (struct node*)malloc(sizeof(struct node));
+    node->value=val;
+    node->right=node->left=NULL;
+    node->leftsidesize=0;
+    node->repeat=1;
+    return node;
+}
+struct node* insert(struct node* root,int val,int *count)
+{
+    if(root==NULL)
+    {
+        return create(val);
+    }
+    else if(root->value==val)
+    {
+        (root->repeat)++;
+        *count += (root->leftsidesize);
+    }
+    else if(root->value>val)
+    {
+        root->leftsidesize++;
+        root->left=insert(root->left,val,count);
+    }
+    else{
+        *count += (root->repeat)+(root->leftsidesize);
+        root->right=insert(root->right,val,count);
+    }
+    return root;
+}
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* countSmaller(int* nums, int numsSize, int* returnSize){
+    *returnSize=numsSize;
+    int* output = (int*)malloc(numsSize*sizeof(int));
+    for(int i=0;i<numsSize;i++)
+    {
+        output[i]=0;
+    }
+    struct node *root = NULL;
+    for(int i=numsSize-1;i>=0;i--)
+    {
+        root=insert(root,nums[i], & output[i]);
+    }
+    // for(int i=0;i<numsSize;i++)
+    // {
+    //     printf("%d\t",output[i]);
+    // }
+    return output;
+}
